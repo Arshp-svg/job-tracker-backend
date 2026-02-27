@@ -67,8 +67,7 @@ async def add_security_headers(request: Request, call_next):
 app.add_middleware(SlowAPIMiddleware)
 
 # Get allowed origins from environment variable
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")
-origins = [origin.strip() for origin in allowed_origins.split(",")]
+origins = ["https://job-tracker-sa35.vercel.app/"]
 
 app.add_middleware(
     CORSMiddleware,
