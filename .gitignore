@@ -1,0 +1,38 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+jb/
+
+# Local config
+.env
+.env*
+
+# SQLite DBs and DB artifacts
+jobs.db
+*.sqlite
+*.sqlite3
+*.db
+
+# Packaging/build
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Tooling / cache
+.mypy_cache/
+.pytest_cache/
+.coverage
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Misc
+*.log
+.DS_Store
