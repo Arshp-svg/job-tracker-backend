@@ -42,12 +42,20 @@ if DATABASE_URL.startswith("sqlite"):
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 else:
+    # PostgreSQL configuration with connection pooling
     engine = create_engine(
         DATABASE_URL,
-        pool_size=10,
-        max_overflow=20,
+        pool_size=5,
+        max_overflow=10,
         pool_pre_ping=True,
-        pool_recycle=3600
+        pool_recycle=3600,
+        connect_args={
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+            "connect_timeout": 10,
+        }
     )
 
 SessionLocal = sessionmaker(bind=engine)

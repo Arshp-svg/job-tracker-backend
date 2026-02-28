@@ -77,7 +77,13 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 
-Base.metadata.create_all(bind=engine)
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database tables on startup."""
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Warning: Could not create database tables: {e}")
 
 app.include_router(jobs.router)
 app.include_router(insights.router)
