@@ -80,13 +80,17 @@ def login(
         
     token = create_access_token(data={"sub": user.email})
     
-    response = JSONResponse(content={"message": "Login successful"})
+    response = JSONResponse(content={
+        "message": "Login successful",
+        "access_token": token,
+        "token_type": "bearer"
+    })
     response.set_cookie(
         key="access_token",
         value=token,
         httponly=True,
         secure=IS_PRODUCTION,  # Only require HTTPS in production
-        samesite="lax" if IS_PRODUCTION else "lax",  # 'strict' might block cross-origin in dev
+        samesite="none" if IS_PRODUCTION else "lax",  # 'none' for cross-origin in production
         max_age=3600
     )
     return response
@@ -98,6 +102,6 @@ def logout():
         key="access_token",
         httponly=True,
         secure=IS_PRODUCTION,
-        samesite="lax" if IS_PRODUCTION else "lax"
+        samesite="none" if IS_PRODUCTION else "lax"
     )
     return response
