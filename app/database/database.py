@@ -1,9 +1,30 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, declarative_base
+from urllib.parse import quote_plus
 import os
+import re
 
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./jobs.db")
+def fix_database_url(url: str) -> str:
+    """Fix DATABASE_URL by properly encoding the password if it contains special characters."""
+    if url.startswith("sqlite"):
+        return url
+    
+    # Match postgresql://user:password@host:port/database
+    pattern = r'^(postgresql(?:\+\w+)?://)([^:]+):([^@]+)@(.+)$'
+    match = re.match(pattern, url)
+    
+    if match:
+        protocol, user, password, rest = match.groups()
+        # URL-encode the password (and username for safety)
+        encoded_user = quote_plus(user)
+        encoded_password = quote_plus(password)
+        return f"{protocol}{encoded_user}:{encoded_password}@{rest}"
+    
+    return url
+
+
+DATABASE_URL = fix_database_url(os.getenv("DATABASE_URL", "sqlite:///./jobs.db"))
 
 
 if DATABASE_URL.startswith("sqlite"):
